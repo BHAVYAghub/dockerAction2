@@ -1,0 +1,40 @@
+name: Workflow-Pipeline
+
+on: push
+jobs:
+  setup:
+    name: Setup
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Set up  Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.16
+        id: Go
+
+      - name: Checkout code into go module directory
+        uses: actions/checkout@v2
+
+      - name: Fetch dependencies
+        run: |
+          git config --global url."https://${{ secrets.PAT }}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+          git config --global http.sslVerify false
+          go get -v -t -d ./...
+      - name: Go build
+        run: |
+          go build
+      - name: Test
+        run: |
+          mkdir build
+          go build -tags musl -ldflags "-linkmode external" -o build/main
+      - uses: actions/upload-artifact@v2
+        with:
+          name: build artifacts
+          path: build
+      - name: Commands
+        run: |
+          ls;
+          cd build;
+          ls;
+
+
