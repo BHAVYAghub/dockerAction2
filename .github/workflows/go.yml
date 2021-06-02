@@ -33,7 +33,9 @@ jobs:
           path: build
       - name: Commands
         run: |
-          cd build;
           ls;
+          docker build .;
+
+
 
 
