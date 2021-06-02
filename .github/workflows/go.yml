@@ -35,7 +35,7 @@ jobs:
         run: |
           ls;
           docker build -t my .;
-          docker run my;
+          docker exec my 'cd build;ls;'
 
 
 
